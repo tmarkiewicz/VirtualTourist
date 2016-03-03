@@ -14,6 +14,7 @@
 		37C2233D1C84E86D002DC83D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37C2233C1C84E86D002DC83D /* Assets.xcassets */; };
 		37C223401C84E86D002DC83D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37C2233E1C84E86D002DC83D /* LaunchScreen.storyboard */; };
 		37D91ECF1C861CE000D0509D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D91ECE1C861CE000D0509D /* Common.swift */; };
+		37D91ED11C86265600D0509D /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D91ED01C86265600D0509D /* FlickrClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		37C2233F1C84E86D002DC83D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		37C223411C84E86D002DC83D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37D91ECE1C861CE000D0509D /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		37D91ED01C86265600D0509D /* FlickrClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				37C223411C84E86D002DC83D /* Info.plist */,
 				37C223391C84E86D002DC83D /* VirtualTourist.xcdatamodeld */,
 				37D91ECE1C861CE000D0509D /* Common.swift */,
+				37D91ED01C86265600D0509D /* FlickrClient.swift */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37D91ECF1C861CE000D0509D /* Common.swift in Sources */,
+				37D91ED11C86265600D0509D /* FlickrClient.swift in Sources */,
 				37C223351C84E86D002DC83D /* ViewController.swift in Sources */,
 				37C223331C84E86D002DC83D /* AppDelegate.swift in Sources */,
 				37C2233B1C84E86D002DC83D /* VirtualTourist.xcdatamodeld in Sources */,
