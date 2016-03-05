@@ -45,10 +45,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
     
     // Respond to taps on the annotation
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-//        
-//        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionController") as! CollectionViewController
-//        controller.setMapViewAnnotation(view.annotation!)
-//        self.presentViewController(controller, animated: true, completion: nil)
+        
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionController") as! CollectionViewController
+        //controller.setMapViewAnnotation(view.annotation!)
+        self.presentViewController(controller, animated: true, completion: nil)
         
         guard let annotation = view.annotation else { /* no annotation */ return }
         let latitude = annotation.coordinate.latitude
