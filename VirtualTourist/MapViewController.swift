@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MapViewController.swift
 //  VirtualTourist
 //
 //  Created by Tom Markiewicz on 2/29/16.
@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class ViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
@@ -59,6 +59,7 @@ class ViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsContr
     }
 
     func displayExistingPins() {
+        // Debugging referece: http://stackoverflow.com/questions/25897122/executefetchrequest-throw-fatal-error-nsarray-element-failed-to-match-the-swift
         
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         

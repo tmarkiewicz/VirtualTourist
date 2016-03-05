@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 
+@objc(Photo)
+
 class Photo : NSManagedObject {
     
     struct Keys {
