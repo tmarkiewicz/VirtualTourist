@@ -53,21 +53,24 @@ extension FlickrClient {
                             let photoURLString = photoDictionary[JSONValues.URLMediumPhoto] as! String
                             
                             // Create the Photos model
-                            let newPhoto = Photo(imageURL: photoURLString, imagePath: "", pin: pin, context: self.sharedContext)
-                            print(newPhoto)
+                            dispatch_async(dispatch_get_main_queue(), {
+                                let newPhoto = Photo(imageURL: photoURLString, imagePath: "", pin: pin, context: self.sharedContext)
                             
-                            // Download photo by URL
-                            self.downloadPhotoImage(newPhoto, completionHandler: {
-                                success, error in
+                                print(newPhoto)
                                 
-                                print("Downloading photo by URL: \(success): \(error)")
-                                
-                                // Post NSNotification
-                                NSNotificationCenter.defaultCenter().postNotificationName("com.tmarkiewicz.downloadedPhotos", object: nil)
-                                
-                                // Save the context
-                                dispatch_async(dispatch_get_main_queue(), {
-                                    CoreDataStackManager.sharedInstance().saveContext()
+                                // Download photo by URL
+                                self.downloadPhotoImage(newPhoto, completionHandler: {
+                                    success, error in
+                                    
+                                    print("Downloading photo by URL: \(success): \(error)")
+                                    
+                                    // Post NSNotification
+                                    NSNotificationCenter.defaultCenter().postNotificationName("com.tmarkiewicz.downloadedPhotos", object: nil)
+                                    
+                                    // Save the context
+                                    dispatch_async(dispatch_get_main_queue(), {
+                                        CoreDataStackManager.sharedInstance().saveContext()
+                                    })
                                 })
                             })
                         }
@@ -97,7 +100,6 @@ extension FlickrClient {
                 completionHandler(success: false, error: error)
                 
             } else {
-                
                 if let result = result {
                     
                     // Get file name and file url
@@ -111,8 +113,10 @@ extension FlickrClient {
                     NSFileManager.defaultManager().createFileAtPath(fileURL.path!, contents: result, attributes: nil)
                     
                     // Update the photo model
-                    photo.imagePath = fileURL.path!
-                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        photo.imagePath = fileURL.path!
+                    })
+
                     completionHandler(success: true, error: nil)
                 }
             }

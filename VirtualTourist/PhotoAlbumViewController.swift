@@ -80,7 +80,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
             selectedCollectionViewCells.removeAll()
             
             // Save new collection to Core Data
-            CoreDataStackManager.sharedInstance().saveContext()
+            dispatch_async(dispatch_get_main_queue(), {
+                CoreDataStackManager.sharedInstance().saveContext()
+            })
             
             do {
                 try self.fetchedResultsController.performFetch()
@@ -99,7 +101,9 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
             }
             
             // Save to Core Data
-            CoreDataStackManager.sharedInstance().saveContext()
+            dispatch_async(dispatch_get_main_queue(), {
+                CoreDataStackManager.sharedInstance().saveContext()
+            })
             
             // Refresh collection from Flickr
             print("Reloading from Flickr")

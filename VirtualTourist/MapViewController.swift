@@ -15,9 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     var pins = [Pin]()
-    
-    var temporaryContext: NSManagedObjectContext!
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,14 +24,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         uiLongPress.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(uiLongPress)
         
-        let sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext
-        
-        // Set the temporary context
-        temporaryContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
-        temporaryContext.persistentStoreCoordinator = sharedContext.persistentStoreCoordinator
-        
         // Display existing pins on map
-        displayExistingPins()
+        dispatch_async(dispatch_get_main_queue(), {
+            self.displayExistingPins()
+        })
         
     }
 
@@ -105,27 +99,33 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let annotation = MKPointAnnotation()
             annotation.coordinate = newCoordinates
             
-            // Save pin to Core Data
-            let newPin = Pin(lat: annotation.coordinate.latitude, long: annotation.coordinate.longitude, context: self.sharedContext)
-            
-            self.pins.append(newPin)
-            CoreDataStackManager.sharedInstance().saveContext()
-            
-            CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
-                
-                if error != nil {
-                    print("Reverse geocoder failed with error " + error!.localizedDescription)
-                    return
-                }
-                
-                self.mapView.addAnnotation(annotation)
-                
-                print("Selected pin with coordinates: \(annotation.coordinate.latitude), \(annotation.coordinate.longitude)")
 
-            })
             
-            // Download images from Flickr
-            FlickrClient.sharedInstance().downloadPhotosForPin(newPin) { (success, error) in print("Error in downloadPhotosForPin: \(error)") }
+            dispatch_async(dispatch_get_main_queue(), {
+                // Save pin to Core Data
+                let newPin = Pin(lat: annotation.coordinate.latitude, long: annotation.coordinate.longitude, context: self.sharedContext)
+                
+                self.pins.append(newPin)
+                CoreDataStackManager.sharedInstance().saveContext()
+            
+            
+                CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
+                    
+                    if error != nil {
+                        print("Reverse geocoder failed with error " + error!.localizedDescription)
+                        return
+                    }
+                    
+                    self.mapView.addAnnotation(annotation)
+                    
+                    print("Selected pin with coordinates: \(annotation.coordinate.latitude), \(annotation.coordinate.longitude)")
+
+                })
+            
+                // Download images from Flickr
+                FlickrClient.sharedInstance().downloadPhotosForPin(newPin) { (success, error) in print("Error in downloadPhotosForPin: \(error)") }
+                
+            })
             
         }
     }
