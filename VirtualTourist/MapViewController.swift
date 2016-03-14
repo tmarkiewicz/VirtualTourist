@@ -10,18 +10,16 @@ import UIKit
 import MapKit
 import CoreData
 
-class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
-    // var pins = [NSManagedObject]()
     var pins = [Pin]()
     
     var temporaryContext: NSManagedObjectContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         self.mapView.delegate = self
         let uiLongPress = UILongPressGestureRecognizer(target: self, action: "addAnnotation:")
@@ -34,7 +32,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         temporaryContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
         temporaryContext.persistentStoreCoordinator = sharedContext.persistentStoreCoordinator
         
-        // TODO: display existing pins on map
+        // Display existing pins on map
         displayExistingPins()
         
     }
@@ -43,21 +41,39 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }()
     
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        annotationView.canShowCallout = false
+        
+        return annotationView
+    }
+    
     // Respond to taps on the annotation
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionController") as! CollectionViewController
-        //controller.setMapViewAnnotation(view.annotation!)
-        self.presentViewController(controller, animated: true, completion: nil)
-        
         guard let annotation = view.annotation else { /* no annotation */ return }
         let latitude = annotation.coordinate.latitude
         let longitude = annotation.coordinate.longitude
-        mapView.deselectAnnotation(annotation, animated: true)
+        mapView.deselectAnnotation(view.annotation, animated: true)
         
-        print("lat: \(latitude), long: \(longitude)")
+        print("Latitude: \(latitude), Longitude: \(longitude)")
+        
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        do {
+            let results = try sharedContext.executeFetchRequest(fetchRequest) as! [Pin]
+            for pin in results {
+                if latitude == pin.latitude && longitude == pin.longitude {
+                    let vc = storyboard?.instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
+                    vc.pin = pin
+                    self.presentViewController(vc, animated: true, completion: nil)
+                }
+            }
+            
+        } catch {
+            print("Error")
+            
+        }
     }
-
+    
     func displayExistingPins() {
         // Debugging referece: http://stackoverflow.com/questions/25897122/executefetchrequest-throw-fatal-error-nsarray-element-failed-to-match-the-swift
         
@@ -80,9 +96,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         
     }
     
-    // Long press to drop pin
-    // Reference: http://stackoverflow.com/questions/30858360/adding-a-pin-annotation-to-a-map-view-on-a-long-press-in-swift
-    //
+    // Long press to drop pin; Reference: http://stackoverflow.com/questions/30858360/adding-a-pin-annotation-to-a-map-view-on-a-long-press-in-swift
     func addAnnotation(gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
             let touchPoint = gestureRecognizer.locationInView(mapView)
@@ -90,13 +104,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
             let annotation = MKPointAnnotation()
             annotation.coordinate = newCoordinates
             
-            // save pin to Core Data
-            // let newPin = Pin(dictionary: coordinates, context: self.sharedContext)
+            // Save pin to Core Data
             let newPin = Pin(lat: annotation.coordinate.latitude, long: annotation.coordinate.longitude, context: self.sharedContext)
             
             self.pins.append(newPin)
             CoreDataStackManager.sharedInstance().saveContext()
-            
             
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
                 
@@ -110,6 +122,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
                 print("selected pin with coordinates: \(annotation.coordinate.latitude), \(annotation.coordinate.longitude)")
 
             })
+            
+            // Download images from Flickr
+            FlickrClient.sharedInstance().downloadPhotosForPin(newPin) { (success, error) in print("Error in downloadPhotosForPin: \(error)") }
+            
         }
     }
     
