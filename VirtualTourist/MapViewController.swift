@@ -69,13 +69,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
             
         } catch {
-            print("Error")
-            
+            print("Error in mapView: \(error)")
+            showAlert("Error responding to the annotation.")
         }
     }
     
     func displayExistingPins() {
-        // Debugging referece: http://stackoverflow.com/questions/25897122/executefetchrequest-throw-fatal-error-nsarray-element-failed-to-match-the-swift
+        // Debugging reference: http://stackoverflow.com/questions/25897122/executefetchrequest-throw-fatal-error-nsarray-element-failed-to-match-the-swift
         
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         
@@ -90,13 +90,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
             
         } catch {
-            print("Error in displayExistingPins(): \(error)")
+            print("Error in displayExistingPins: \(error)")
             showAlert("Error displaying existing pins.")
         }
         
     }
     
-    // Long press to drop pin; Reference: http://stackoverflow.com/questions/30858360/adding-a-pin-annotation-to-a-map-view-on-a-long-press-in-swift
+    // Long press to drop pin
+    // Reference: http://stackoverflow.com/questions/30858360/adding-a-pin-annotation-to-a-map-view-on-a-long-press-in-swift
     func addAnnotation(gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
             let touchPoint = gestureRecognizer.locationInView(mapView)
@@ -113,13 +114,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
                 
                 if error != nil {
-                    print("Reverse geocoder failed with error" + error!.localizedDescription)
+                    print("Reverse geocoder failed with error " + error!.localizedDescription)
                     return
                 }
                 
                 self.mapView.addAnnotation(annotation)
                 
-                print("selected pin with coordinates: \(annotation.coordinate.latitude), \(annotation.coordinate.longitude)")
+                print("Selected pin with coordinates: \(annotation.coordinate.latitude), \(annotation.coordinate.longitude)")
 
             })
             

@@ -20,7 +20,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
     var pin: Pin? = nil
     var photos = [Photo]()
     
-    // Start off not deleting, with bottom button being "refresh collection"
+    // Start off not deleting, with bottom button title labeled "Refresh Collection"
     // If user selects a picture, button switches to delete mode
     var isDeleteMode = false
     
@@ -73,7 +73,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
             // Remove each selected photo from array
             for indexPath in selectedCollectionViewCells {
                 let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-                print("Deleting photo -- \(photo)")
+                print("Deleting photo: \(photo)")
                 sharedContext.deleteObject(photo)
             }
             

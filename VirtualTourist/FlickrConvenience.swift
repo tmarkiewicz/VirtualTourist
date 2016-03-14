@@ -18,7 +18,7 @@ extension FlickrClient {
         // Reference: https://discussions.udacity.com/t/virtual-tourist-flickr-api-random-page-problem/45977/7
         var randomPageNumber: Int
         randomPageNumber = Int((arc4random_uniform(UInt32(40)))) + 1
-        print("random page number: \(randomPageNumber)")
+        print("Random page number: \(randomPageNumber)")
         
         // request parameters
         let parameters: [String : AnyObject] = [
@@ -92,7 +92,7 @@ extension FlickrClient {
             
             // If there is an error - set file path to error to show blank image
             if let error = error {
-                print("Error from downloading images \(error.localizedDescription )")
+                print("Error from downloading images: \(error.localizedDescription )")
                 photo.imagePath = "error"
                 completionHandler(success: false, error: error)
                 

@@ -107,7 +107,7 @@ class FlickrClient: NSObject {
             if let status = parsedResult[JSONResponseKeys.Status]  as? String,
                 message = parsedResult[JSONResponseKeys.Message] as? String {
                     if status == "fail" {
-                        return NSError(domain: "Virtual Tourist Error", code: 1, userInfo: [NSLocalizedDescriptionKey: message])
+                        return NSError(domain: "Virtual Tourist error", code: 1, userInfo: [NSLocalizedDescriptionKey: message])
                     }
             }
         }

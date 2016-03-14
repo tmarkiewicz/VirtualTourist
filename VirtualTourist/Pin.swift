@@ -37,7 +37,6 @@ class Pin: NSManagedObject {
         // dictionary. This works in the same way that it did before we started on Core Data
         self.latitude = lat
         self.longitude = long
-        
     }
     
 }
